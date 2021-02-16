@@ -1,11 +1,31 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
-</html>
+<%- include('header'); -%>
+<div class="row">
+  <div class="col-12">
+    <h1 class="text-center m-4"><%=title%></h1>
+    <div class="text-center mb-3">
+      <a href="/category/create" class="btn btn-light">
+        Add a Category
+      </a>
+    </div>
+  </div>
+  <hr>
+</div>
+
+<div class="row">
+  <% categories.forEach(category => { %>
+  <div class="col-12 col-sm-6 col-md-4 mt-2 mb-2">
+    <div class="card bg-dark category-cards">
+      <div class="card-body">
+        <h4 class="card-title"><a href="<%=category.url%>" class="category-link"><%=category.name%></a></h4>
+        <p class="card-text"><%=category.description%></p>
+      </div>
+    </div>
+  </div>
+
+  <% }); %>
+
+</div>
+
+
+
+<%- include('footer'); -%>

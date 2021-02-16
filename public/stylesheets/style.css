@@ -1,8 +1,38 @@
+* {
+  color: whitesmoke;
+  font-family: 'Cutive Mono', monospace;
+}
+
+html {
+  font-size: 20px;
+}
+
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background: rgb(70, 70, 70);
+  /* font-size: 150%; */
 }
 
 a {
   color: #00B7FF;
+}
+
+h1 {
+  font-weight: 700;
+}
+
+.btn-light:hover{
+  background-color: #e9e9e9;
+  transition: all 0.15s ease-in;
+}
+
+.category-cards {
+  height: 100%;
+}
+
+.category-link{
+  text-decoration: none;
+}
+
+option {
+  color: #212529;
 }
