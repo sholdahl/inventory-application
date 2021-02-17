@@ -39,8 +39,6 @@ exports.category_create_post = [
 
   (req, res, next) => {
     const errors = validationResult(req);
-    console.log(errors);
-    console.log(req.body);
 
     if (!errors.isEmpty()) {
       // There are errors. Render form again with sanitized values/errors messages.
