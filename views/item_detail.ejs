@@ -1,0 +1,48 @@
+<%- include('header'); -%>
+
+<div class="row">
+    <div class="col-12">
+        <h1 class="text-center m-4">Item Details: <%=item.name%></h1>
+    </div>
+</div>
+
+<div class="row item-detail-row">
+    <div class="mb-3 col-12 col-lg-6 row m-auto">
+        <span class="item-data-label col-12 col-sm-4">Name:</span>
+        <p class="item-data col-12 col-sm-8"><%=item.name%></p>
+    </div>
+    <div class="mb-3 col-12 col-lg-6 row m-auto">
+        <span class="item-data-label col-12 col-sm-4">SKU:</span>
+        <p class="item-data col-12 col-sm-8"><%=item.sku%></p>
+    </div>
+    <div class="mb-3 col-12 col-lg-6 row m-auto">
+        <span class="item-data-label col-12 col-sm-4">Price:</span>
+        <p class="item-data col-12 col-sm-8"><%=item.price%></p>
+    </div>
+    <div class="mb-3 col-12 col-lg-6 row m-auto">
+        <span class="item-data-label col-12 col-sm-4">Quantity:</span>
+        <p class="item-data col-12 col-sm-8"><%=item.quantity%></p>
+    </div>
+    <div class="mb-3 col-12 col-lg-6 row m-auto">
+        <span class="item-data-label col-12 col-sm-4">Weight (lbs):</span>
+        <p class="item-data col-12 col-sm-8"><%=item.weight%></p>
+    </div>
+    <div class="mb-3 col-12 col-lg-6 row m-auto">
+        <span class="item-data-label col-12 col-sm-4">Category:</span>
+        <p class="item-data col-12 col-sm-8"><%=item.category.name%></span>
+    </div>
+    <div class="mb-3 col-12">
+        <p class="item-data-label col-10 m-auto">Description:</p>
+        <p class="item-data-description item-data col-10 text-center m-auto"><%=item.description%></p>
+    </div>
+</div>
+<div class="text-center mb-3">
+    <a href="#" class="btn btn-light">
+        Edit
+    </a>
+    <a href="#" class="btn btn-danger">
+        Delete
+    </a>
+</div>
+
+<%- include('footer'); -%>

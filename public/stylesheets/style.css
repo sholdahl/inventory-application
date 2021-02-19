@@ -36,3 +36,28 @@ h1 {
 option {
   color: #212529;
 }
+
+label {
+  font-weight: 700;
+}
+
+.item-data {
+  background: rgb(120, 120, 120);
+  border-radius: 10px;
+  padding: 5px 15px;
+  display: flex;
+  margin-bottom: 0;
+  margin: 0 0 10px auto;
+  min-height: 40px;
+}
+
+.item-data-label {
+  margin: 0 auto 10px 0;
+  padding: 0;
+  font-weight: 700;
+}
+
+.item-data-description {
+  min-height: 200px;
+}
+

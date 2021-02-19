@@ -1,11 +1,10 @@
 <%- include('header'); -%>
-<%console.log(category)%>
 <div class="row">
     <div class="col-12">
-        <h1 class="text-center m-4"><%=category.name%></h1>
+        <h1 class="text-center m-4"><%=results.category.name%></h1>
     </div>
     <div class="col-12">
-        <p class="text-center"><%=category.description%></p>
+        <p class="text-center"><%=results.category.description%></p>
         <div class="text-center mb-3">
             <a href="#" class="btn btn-light">
                 Edit
@@ -18,5 +17,20 @@
     </div>
     <hr>
 </div>
+
+<div class="row">
+    <% results.items.forEach(item => { %>
+    <div class="col-12 col-sm-6 col-md-4 mt-2 mb-2">
+      <div class="card bg-dark category-cards">
+        <div class="card-body">
+          <h4 class="card-title"><a href="<%=item.url%>" class="category-link"><%=item.name%></a></h4>
+          <p class="card-text"><%=item.description%></p>
+        </div>
+      </div>
+    </div>
+  
+    <% }); %>
+  
+  </div>
 
 <%- include('footer'); -%>

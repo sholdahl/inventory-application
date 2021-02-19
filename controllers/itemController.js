@@ -137,5 +137,12 @@ exports.item_update_post = function (req, res, next) {
 
 // GET request for one item.
 exports.item_detail = function (req, res, next) {
-  res.send("Page not yet build for item_details");
+  Item.findOne(req.body.id)
+  .populate("category")
+  .exec((err, item) => {
+    if(err) {
+      return next(err);
+    }
+    res.render("item_detail", {item: item})
+  })
 };

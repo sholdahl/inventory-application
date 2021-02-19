@@ -6,20 +6,20 @@ const async = require("async");
 // Display list of all Categories.
 exports.index_get = function (req, res, next) {
   Category.find()
-  .sort([["name", "ascending"]])
-  .exec(function (err, categories) {
-    if (err) {
-      return next(err);
-    }
-    if (categories == null) {
-      // no results.
-      let err = new Error("categories not found");
-      err.status = 404;
-      return next(err);
-    }
-    // Successful, so render.
-    res.render("index", { title: "Categories", categories: categories });
-  });
+    .sort([["name", "ascending"]])
+    .exec(function (err, categories) {
+      if (err) {
+        return next(err);
+      }
+      if (categories == null) {
+        // no results.
+        let err = new Error("categories not found");
+        err.status = 404;
+        return next(err);
+      }
+      // Successful, so render.
+      res.render("index", { title: "Categories", categories: categories });
+    });
 };
 
 // GET request for creating category.
@@ -60,7 +60,7 @@ exports.category_create_post = [
         }
 
         if (found_category) {
-          // Genre exists, redirect to its detail page.
+          // Category exists, redirect to its detail page.
           res.redirect(found_category.url);
           console.log("Category already exists");
         } else {
@@ -102,17 +102,27 @@ exports.category_update_post = function (req, res, next) {
 
 // GET request for one category.
 exports.category_detail = function (req, res, next) {
-  Category.findOne({ name: req.params.id.split("_").join(" ") }).exec(function (err, category) {
-    if (err) {
-      return next(err);
+  async.parallel(
+    {
+      category: function (callback) {
+        Category.findOne({ name: req.params.id.split("_").join(" ") }, callback);
+      },
+      items: function (callback) {
+        Item.find({}, callback);
+      },
+    },
+    function (err, results) {
+      if (err) {
+        return next(err);
+      }
+      if (results.category == null) {
+        // no results.
+        let err = new Error("category not found");
+        err.status = 404;
+        return next(err);
+      }
+      // Successful, so render.
+      res.render("category_detail", { results: results });
     }
-    if (category == null) {
-      // no results.
-      let err = new Error("category not found");
-      err.status = 404;
-      return next(err);
-    }
-    // Successful, so render.
-    res.render("category_detail", { category: category });
-  });
+  );
 };
