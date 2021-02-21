@@ -33,14 +33,14 @@
     </div>
     <div class="mb-3 col-12">
         <p class="item-data-label col-10 m-auto">Description:</p>
-        <p class="item-data-description item-data col-10 text-center m-auto"><%=item.description%></p>
+        <p class="item-data-description item-data col-10 text-left m-auto"><%=item.description%></p>
     </div>
 </div>
 <div class="text-center mb-3">
     <a href="<%=item.url%>/update" class="btn btn-light">
         Edit
     </a>
-    <a href="#" class="btn btn-danger">
+    <a href="<%=item.url%>/delete" class="btn btn-danger">
         Delete
     </a>
 </div>

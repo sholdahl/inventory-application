@@ -139,13 +139,31 @@ exports.item_create_post = [
 
 // GET request to delete item.
 exports.item_delete_get = function (req, res, next) {
-  res.send("Page not yet build for item_delete_get");
+  Item.findOne({ skuLower: req.params.id })
+    .populate("category")
+    .exec((err, item) => {
+      if (err) {
+        return next(err);
+      }
+      if (item == null) {
+        res.redirect("/");
+      }
+      res.render("item_delete", {
+        title: "Delete Item",
+        item: item,
+      });
+    });
 };
 
 // POST request to delete item.
 exports.item_delete_post = function (req, res, next) {
-  res.send("Page not yet build for item_delete_post");
-};
+    Item.findByIdAndRemove(req.body.itemid, (err) => {
+      if (err) {
+          return next(err);
+        }
+        res.redirect("/");
+    })
+  }
 
 // GET request to update item.
 exports.item_update_get = function (req, res) {
@@ -255,8 +273,13 @@ exports.item_update_post = [
               if (err) {
                 return next(err);
               }
-              console.log(found_skus)
-              if(!(found_skus.length == 0 || (found_skus.length === 1 && found_skus[0].skuLower === req.params.id))){
+              console.log(found_skus);
+              if (
+                !(
+                  found_skus.length == 0 ||
+                  (found_skus.length === 1 && found_skus[0].skuLower === req.params.id)
+                )
+              ) {
                 Category.find({})
                   .sort([["name", "ascending"]])
                   .exec(function (err, categories) {
@@ -285,12 +308,17 @@ exports.item_update_post = [
                     });
                   });
               } else {
-                Item.findOneAndUpdate({ skuLower: req.params.id }, updatedItem, {}, (err, theItem) => {
-                  if (err) {
-                    return next(err);
+                Item.findOneAndUpdate(
+                  { skuLower: req.params.id },
+                  updatedItem,
+                  {},
+                  (err, theItem) => {
+                    if (err) {
+                      return next(err);
+                    }
+                    res.redirect(theItem.url);
                   }
-                  res.redirect(theItem.url);
-                });
+                );
               }
             });
           }
@@ -302,7 +330,7 @@ exports.item_update_post = [
 
 // GET request for one item.
 exports.item_detail = function (req, res, next) {
-  Item.findOne(req.body.id)
+  Item.findOne({skuLower: req.params.id})
     .populate("category")
     .exec((err, item) => {
       if (err) {
