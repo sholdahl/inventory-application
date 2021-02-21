@@ -4,6 +4,7 @@ let Schema = mongoose.Schema;
 
 let ItemSchema = new Schema({
   name: { type: String, required: true, maxLength: 100 },
+  skuLower: { type: String, required: true, maxLength: 100 },
   sku: { type: String, required: true, maxLength: 100 },
   description: { type: String, maxLength: 5000, required: false },
   quantity: { type: Number, required: true, min: 0 },

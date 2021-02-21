@@ -102,27 +102,36 @@ exports.category_update_post = function (req, res, next) {
 
 // GET request for one category.
 exports.category_detail = function (req, res, next) {
-  async.parallel(
-    {
-      category: function (callback) {
-        Category.findOne({ name: req.params.id.split("_").join(" ") }, callback);
+  async.waterfall(
+    [
+      function (callback) {
+        Category.findOne({ name: req.params.id.split("_").join(" ") }).exec(function (
+          err, found_category) {
+          callback(null, found_category);
+        });
       },
-      items: function (callback) {
-        Item.find({}, callback);
+      function (found_category, callback) {
+        Item.find({ category: found_category._id }).exec(function (
+          err, items) {
+          callback(null, found_category, items);
+        });
       },
-    },
-    function (err, results) {
+      function (found_category, items, callback) {
+        if (found_category == null) {
+          // no results.
+          let err = new Error("category not found");
+          err.status = 404;
+          return next(err);
+        }
+        // Successful, so render.
+        res.render("category_detail", { category: found_category, items: items });
+        callback(null, "done");
+      },
+    ],
+    function (err, result) {
+      // result now equals 'done'
       if (err) {
         return next(err);
       }
-      if (results.category == null) {
-        // no results.
-        let err = new Error("category not found");
-        err.status = 404;
-        return next(err);
-      }
-      // Successful, so render.
-      res.render("category_detail", { results: results });
-    }
-  );
-};
+  })
+}
