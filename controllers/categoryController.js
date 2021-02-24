@@ -51,10 +51,14 @@ exports.category_create_post = [
     } else {
       let category = new Category({
         name: req.body.name,
+        nameLower: req.body.name.toLowerCase(),
         description: req.body.description,
       });
 
-      Category.findOne({ name: req.body.name }).exec(function (err, found_category) {
+      Category.findOne({ nameLower: req.body.name.toLowerCase() }).exec(function (
+        err,
+        found_category
+      ) {
         if (err) {
           return next(err);
         }
@@ -92,28 +96,122 @@ exports.category_delete_post = function (req, res, next) {
 
 // GET request to update category.
 exports.category_update_get = function (req, res, next) {
-  res.send("Page not yet build for category_update_get");
+  Category.findOne({ nameLower: req.params.id.split("_").join(" ") }).exec(function (
+    err,
+    found_category
+  ) {
+    if (err) {
+      return next(err);
+    }
+    if (found_category) {
+      res.render("category_form", {
+        title: `Update Category: ${found_category.name}`,
+        category: found_category,
+      });
+    } else {
+      return next(err);
+    }
+  });
 };
 
 // POST request to update category.
-exports.category_update_post = function (req, res, next) {
-  res.send("Page not yet build for category_update_post");
-};
+exports.category_update_post = [
+  // Validate and sanitize fields.
+  body("name").trim().isLength({ min: 1 }).escape().withMessage("Must provide a name."),
+  body("description")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("Must provide a description."),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    Category.findOne({ nameLower: req.params.id.split("_").join(" ") }).exec(function (
+      err,
+      found_category
+    ) {
+      if (err) {
+        return next(err);
+      }
+      if (!errors.isEmpty()) {
+        // There are errors. Render form again with sanitized values/errors messages.
+        res.render("category_form", {
+          title: `Update Category: ${found_category.name}`,
+          category: req.body,
+          errors: errors.array(),
+        });
+        return;
+      } else {
+        let updatedCategory = new Category({
+          name: req.body.name,
+          nameLower: req.body.name.toLowerCase(),
+          description: req.body.description,
+          _id: found_category._id,
+        });
+
+        //check to see if the cateogry name is already in use
+        Category.find({ nameLower: updatedCategory.nameLower.split("_").join(" ") }).exec(
+          (err, checked_category) => {
+            if (err) {
+              return next(err);
+            }
+            if (checked_category) {
+              if (checked_category._id == found_category._id) {
+                let msg = `the category name <a href="${checked_category[0].url}">${checked_category[0].name}</a> is already in use.`;
+                res.render("category_form", {
+                  title: `Update Category: ${found_category.name}`,
+                  category: req.body,
+                  errors: [
+                    {
+                      msg: msg,
+                    },
+                  ],
+                });
+              }
+            }
+            Category.findByIdAndUpdate(
+              updatedCategory._id,
+              updatedCategory,
+              { new: true },
+              (err, theCategory) => {
+                if (err) {
+                  return next(err);
+                }
+                console.log("POST LOGIC: " + updatedCategory);
+                res.redirect(theCategory.url);
+              }
+            );
+          }
+        );
+      }
+    });
+  },
+];
 
 // GET request for one category.
 exports.category_detail = function (req, res, next) {
   async.waterfall(
     [
       function (callback) {
-        Category.findOne({ name: req.params.id.split("_").join(" ") }).exec(function (
-          err, found_category) {
-          callback(null, found_category);
+        Category.findOne({ nameLower: req.params.id.split("_").join(" ") }).exec(function (
+          err,
+          found_category
+        ) {
+          if (found_category) {
+            callback(null, found_category);
+          } else {
+            return next(err);
+          }
         });
       },
       function (found_category, callback) {
-        Item.find({ category: found_category._id }).exec(function (
-          err, items) {
-          callback(null, found_category, items);
+        Item.find({ category: found_category._id }).exec(function (err, items) {
+          if (items) {
+            callback(null, found_category, items);
+          } else {
+            return next(err);
+          }
         });
       },
       function (found_category, items, callback) {
@@ -133,5 +231,6 @@ exports.category_detail = function (req, res, next) {
       if (err) {
         return next(err);
       }
-  })
-}
+    }
+  );
+};
