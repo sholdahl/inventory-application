@@ -86,12 +86,28 @@ exports.category_create_post = [
 
 // GET request to delete category.
 exports.category_delete_get = function (req, res, next) {
-  res.send("Page not yet build for category_delete_get");
+  Category.findOne({ nameLower: req.params.id.split("_").join(" ") }).exec((err, category) => {
+    if (err) {
+      return next(err);
+    }
+    if (category == null) {
+      res.redirect("/");
+    }
+    res.render("category_delete", {
+      title: "Delete Category",
+      category: category,
+    });
+  });
 };
 
 // POST request to delete category.
 exports.category_delete_post = function (req, res, next) {
-  res.send("Page not yet build for category_delete_post");
+  Category.findByIdAndRemove(req.body.categoryid, (err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
 };
 
 // GET request to update category.
