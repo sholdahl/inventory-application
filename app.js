@@ -7,12 +7,13 @@ var logger = require("morgan");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 
+require('dotenv').config()
+
 var app = express();
 
 // mongoose connection
 let mongoose = require("mongoose");
-let dev_db_url =
-  "mongodb+srv://sholdahl:secretpassword@cluster0.smkcs.mongodb.net/inventory_application?retryWrites=true&w=majority";
+let dev_db_url = process.env.DB_STRING
 mongoose.connect(dev_db_url, { useNewUrlParser: true, useUnifiedTopology: true });
 let db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connetion error: "));
